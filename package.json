@@ -4,13 +4,20 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "start": "nodemon src/server.js"
   },
   "dependencies": {
-    "pg-hstore": "^2.3.4"
+    "express": "^4.18.2",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.3",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
     "sequelize-cli": "^6.5.1"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "description": ""
 }
