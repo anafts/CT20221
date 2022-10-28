@@ -28,11 +28,15 @@ module.exports = {
         }
     },
 
-    async store(req, res,next) {
+    async store(req, res) {
 
         try {
 
             const { drama_name, favorite_character, streamming_services, release_year } = req.body;
+
+            if (!drama_name || !favorite_character || !streamming_services || !release_year) {
+                return res.status(404).send('Verifique se todos os campos estão preenchidos!')
+            }
             
             const dramas = await Kdramas.create({
             drama_name, 
@@ -41,10 +45,10 @@ module.exports = {
             release_year
         });
 
-        return res.status(200).send();
+        return res.status(200).send('Kdrama cadastrado com sucesso!');
             
         } catch (error) {
-            next(error);
+            return res.status(409).send('Kdrama já cadrastrado!');
         }
         
     },
@@ -56,7 +60,7 @@ module.exports = {
             const { id } = req.params;
             const newKdramas = await Kdramas.destroy({ where: {'id': id } });
 
-            return res.status(200).send();
+            return res.status(200).send('Kdrama deletado!');
             
         } catch (error) {
 
@@ -72,6 +76,10 @@ module.exports = {
 
             const { drama_name, favorite_character, streamming_services, release_year } = req.body;
 
+            if (!drama_name || !favorite_character || !streamming_services || !release_year) {
+                return res.status(404).send('Verifique se todos os campos estão preenchidos!')
+            }
+
             const dramaUpdate = await Kdramas.update(
                 {
                  'drama_name': drama_name, 
@@ -84,7 +92,7 @@ module.exports = {
                 }
             );
 
-            return res.status(200).send(); 
+            return res.status(200).send('Informação atualizada com sucesso!'); 
             
         } catch (error) {
             next(error);
