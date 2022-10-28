@@ -1,13 +1,13 @@
 const express = require('express');
-const UserController = require('./controllers/KdramaController');
+const KdramaController = require('./controllers/KdramaController');
 
 const routes = express.Router();
 
-routes.get('/kdrama', UserController.index );
-routes.get('/kdrama/:id', UserController.findById );
-routes.post('/kdrama', UserController.store );
-routes.delete('/kdrama/:id', UserController.removeById );
-routes.put('/kdrama/:id', UserController.updateById );
+routes.get('/kdrama', KdramaController.index );
+routes.post('/kdrama', KdramaController.store );
+routes.get('/kdrama/:id', KdramaController.findById );
+routes.delete('/kdrama/:id', KdramaController.removeById );
+routes.put('/kdrama/:id', KdramaController.updateById );
 
 
 
