@@ -1,0 +1,17 @@
+const Kdramas = require('../models/Kdramas');
+
+
+module.exports = {
+
+    async index(req, res, next) {
+
+        try {
+            
+            
+        } catch (error) {
+            next(error)
+        }
+
+    },
+
+};
