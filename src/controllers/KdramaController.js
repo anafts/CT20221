@@ -1,5 +1,5 @@
 const Kdramas = require('../models/Kdramas');
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 module.exports = {
@@ -15,7 +15,12 @@ module.exports = {
             if (genres) {
                 const kdramaGenres = await Kdramas.findAndCountAll({
                     where: {
-                        genres: genres
+                        genres: Sequelize.where(
+                            Sequelize.cast(Sequelize.col('genres'), 'text'),
+                            {
+                                [Op.iLike]: `%${genres}%` 
+                            }
+                        )
                     }
                 })
 
@@ -77,6 +82,14 @@ module.exports = {
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
                 return res.status(405).send('Verifique se todos os campos estão preenchidos!')
             }
+
+            if ( rating < 0 || rating > 5 ) {
+                return res.status(405).send('It should be rated between 0.0 and 5.0')
+            }
+
+            if ( !genres === "romance" || !genres === "action" || !genres === "romantic comedy" || !genres === "others" ) {
+                return res.status(405).send('Just romance, action, romantic comedy and others are available genres')
+            }
             
             const createKdrama = await Kdramas.create({
             drama_name, 
@@ -91,7 +104,7 @@ module.exports = {
         return res.status(201).send('Kdrama cadastrado com sucesso!');
             
         } catch (error) {
-            console.log({ error })
+            // console.log({ error })
             return res.status(409).send('Kdrama já cadrastrado!');
         }
         
@@ -122,6 +135,14 @@ module.exports = {
 
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
                 return res.status(405).send('Verifique se todos os campos estão preenchidos!')
+            }
+
+            if ( rating < 0 || rating > 5 ) {
+                return res.status(405).send('It should be rated between 0.0 and 5.0')
+            }
+
+            if ( !genres === "romance" || !genres === "action" || !genres === "romantic comedy" || !genres === "others" ) {
+                return res.status(405).send('Just romance, action, romantic comedy and others are available genres')
             }
 
             const updateKdrama = await Kdramas.update(
