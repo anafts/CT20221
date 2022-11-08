@@ -1,21 +1,25 @@
 const Kdramas = require('../models/Kdramas');
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 module.exports = {
 
     async index(req, res, next) {
 
-        const genre = req.query.genres
+        const genres = req.query.genres
         const release_year = req.query.release_year
+        const review = req.query.review
 
         try {
-            if (genre) {
-                const result = await Kdramas.findAll({
+
+            if (genres) {
+                const kdramaGenres = await Kdramas.findAndCountAll({
                     where: {
-                        genres: genre
+                        genres: genres
                     }
                 })
 
-                return res.json(result)
+                return res.json(kdramaGenres)
             }
 
             if (release_year) {
@@ -28,7 +32,19 @@ module.exports = {
                 return res.json(kdramaYear)
             }
 
-            const newKdramas = await Kdramas.findAll();
+            if (review) {
+                const kdramaReview = await Kdramas.findAndCountAll({
+                    where: {
+                        review: {
+                            [Op.like]: `%${review}%`
+                        }
+                    }
+                })
+
+                return res.json(kdramaReview)
+            }
+
+            const newKdramas = await Kdramas.findAndCountAll();
 
             return res.json(newKdramas);
 
@@ -38,6 +54,7 @@ module.exports = {
     },
 
     async findById(req, res, next) {
+        
         try {
 
             const { id } = req.params;
@@ -55,18 +72,20 @@ module.exports = {
 
         try {
 
-            const { drama_name, favorite_character, streamming_services, release_year, genres } = req.body;
+            const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
 
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
                 return res.status(405).send('Verifique se todos os campos estão preenchidos!')
             }
             
-            const dramas = await Kdramas.create({
+            const createKdrama = await Kdramas.create({
             drama_name, 
             favorite_character, 
             streamming_services, 
             release_year,
-            genres
+            genres,
+            rating, 
+            review
         });
 
         return res.status(201).send('Kdrama cadastrado com sucesso!');
@@ -83,7 +102,7 @@ module.exports = {
         try {
 
             const { id } = req.params;
-            const newKdramas = await Kdramas.destroy({ where: {'id': id } });
+            const deleteKdrama = await Kdramas.destroy({ where: {'id': id } });
 
             return res.status(202).send('Kdrama deletado!');
             
@@ -99,18 +118,21 @@ module.exports = {
 
             const { id } = req.params;
 
-            const { drama_name, favorite_character, streamming_services, release_year } = req.body;
+            const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
 
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
                 return res.status(405).send('Verifique se todos os campos estão preenchidos!')
             }
 
-            const dramaUpdate = await Kdramas.update(
+            const updateKdrama = await Kdramas.update(
                 {
                  'drama_name': drama_name, 
                  'favorite_character': favorite_character, 
                  'streamming_services': streamming_services,
-                 'release_year': release_year 
+                 'release_year': release_year,
+                 'genres': genres,
+                 'rating': rating,
+                 'review': review
                 },
                 {
                     where: { 'id': id}
