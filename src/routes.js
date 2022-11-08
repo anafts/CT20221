@@ -10,7 +10,7 @@ routes.get('/kdrama/:id', KdramaController.findById );
 routes.delete('/kdrama/:id', KdramaController.removeById );
 routes.put('/kdrama/:id', KdramaController.updateById );
 
-routes.get('/summary', SummaryController.index);
+routes.get('/summary/:release_year/:streamming_services', SummaryController.index);
 
 
 module.exports = routes;
