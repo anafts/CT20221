@@ -54,14 +54,14 @@ module.exports = {
     },
 
     async findById(req, res, next) {
-        
+
         try {
 
             const { id } = req.params;
 
-            const newKdramas = await Kdramas.findOne({ where: {'id': id} });
+            const kdramaId = await Kdramas.findOne({ where: {'id': id} });
 
-            return res.json(newKdramas);
+            return res.json(kdramaId);
 
         } catch (error) {
            next(error);
