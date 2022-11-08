@@ -1,6 +1,6 @@
-const sequelize = require('sequelize');
 const Kdramas = require('../models/Kdramas');
-
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 module.exports = {
 
@@ -14,16 +14,20 @@ module.exports = {
             const kdramaYear = await Kdramas.findAndCountAll({
                 where: {
                     release_year: release_year,
-                    streamming_services: streamming_services
+                    streamming_services: {
+                        [Op.iLike]: `%${streamming_services}%`
+                    }
                 }
             })
             
             const [ratingAverage] = await Kdramas.findAll({
                 where: {
                     release_year: release_year,
-                    streamming_services: streamming_services
+                    streamming_services: {
+                        [Op.iLike]: `%${streamming_services}%` 
+                    }
                 },
-                attributes: [[sequelize.fn('avg', sequelize.col('rating')), 'average']],
+                attributes: [[Sequelize.fn('avg', Sequelize.col('rating')), 'average']],
                 raw: true
             })
 
