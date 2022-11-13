@@ -87,7 +87,7 @@ module.exports = {
                 return res.status(405).send('It should be rated between 0.0 and 5.0')
             }
 
-            if ( !genres === "romance" || !genres === "action" || !genres === "romantic comedy" || !genres === "others" ) {
+            if (genres !== "romance" && genres && "action" && genres !== "romantic comedy" && genres !== "others") {
                 return res.status(405).send('Just romance, action, romantic comedy and others are available genres')
             }
             
@@ -141,7 +141,7 @@ module.exports = {
                 return res.status(405).send('It should be rated between 0.0 and 5.0')
             }
 
-            if ( !genres === "romance" || !genres === "action" || !genres === "romantic comedy" || !genres === "others" ) {
+            if (genres !== "romance" && genres && "action" && genres !== "romantic comedy" && genres !== "others") {
                 return res.status(405).send('Just romance, action, romantic comedy and others are available genres')
             }
 
