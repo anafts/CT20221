@@ -1,15 +1,26 @@
 const Kdramas = require('../models/Kdramas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const jwt = require('jsonwebtoken');
 
 module.exports = {
 
     async index(req, res, next) {
 
+        const { release_year } = req.params;
+        const { streamming_services } = req.params;
+
+        const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
+
         try {
-            
-            const { release_year } = req.params;
-            const { streamming_services } = req.params;
 
             const kdramaYear = await Kdramas.findAndCountAll({
                 where: {
