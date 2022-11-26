@@ -1,6 +1,7 @@
 const Kdramas = require('../models/Kdramas');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const jwt = require('jsonwebtoken');
 
 module.exports = {
 
@@ -9,6 +10,16 @@ module.exports = {
         const genres = req.query.genres
         const release_year = req.query.release_year
         const review = req.query.review
+
+        const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
 
         try {
 
@@ -60,9 +71,19 @@ module.exports = {
 
     async findById(req, res, next) {
 
-        try {
+        const { id } = req.params;
 
-            const { id } = req.params;
+        const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
+
+        try {
 
             const kdramaId = await Kdramas.findOne({ where: {'id': id} });
 
@@ -75,12 +96,22 @@ module.exports = {
 
     async store(req, res) {
 
+        const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
+
+        const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
+
         try {
 
-            const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
-
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
-                return res.status(405).send('Verifique se todos os campos estão preenchidos!')
+                return res.status(405).send('Make sure all fields are filled in!')
             }
 
             if ( rating < 0 || rating > 5 ) {
@@ -101,23 +132,34 @@ module.exports = {
             review
         });
 
-        return res.status(201).send('Kdrama cadastrado com sucesso!');
+        return res.status(201).send('Kdrama successfully registered');
             
         } catch (error) {
             // console.log({ error })
-            return res.status(409).send('Kdrama já cadrastrado!');
+            return res.status(409).send('Kdrama already registered!');
         }
         
     },
 
     async removeById(req, res, next) {
 
+        const { id } = req.params;
+
+        const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
+
         try {
 
-            const { id } = req.params;
             const deleteKdrama = await Kdramas.destroy({ where: {'id': id } });
 
-            return res.status(202).send('Kdrama deletado!');
+            return res.status(202).send('Kdrama  successfully deleted!');
             
         } catch (error) {
 
@@ -127,14 +169,23 @@ module.exports = {
 
     async updateById (req,res, next) {
 
+         const { id } = req.params;
+         const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
+
+         const token = req.headers?.token
+
+        if (token) {
+            const email = jwt.decode(token)
+
+            if (!email) {
+                return res.status(401).send("Invalid token");
+            } 
+        }
+
         try {
 
-            const { id } = req.params;
-
-            const { drama_name, favorite_character, streamming_services, release_year, genres, rating, review } = req.body;
-
             if (!drama_name || !favorite_character || !streamming_services || !release_year) {
-                return res.status(405).send('Verifique se todos os campos estão preenchidos!')
+                return res.status(405).send('Make sure all fields are filled in!')
             }
 
             if ( rating < 0 || rating > 5 ) {
@@ -160,7 +211,7 @@ module.exports = {
                 }
             );
 
-            return res.status(204).send('Informação atualizada com sucesso!'); 
+            return res.status(204).send('Information successfully updated!'); 
             
         } catch (error) {
             next(error);
