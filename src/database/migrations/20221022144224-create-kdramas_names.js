@@ -5,7 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     return await queryInterface.createTable('kdramas_names', 
     {
-     id:{
+       id:{
        type: Sequelize.INTEGER,
        primaryKey: true,
        autoIncrement: true,
