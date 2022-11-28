@@ -9,7 +9,7 @@ module.exports = {
     username: process.env.SECRET_BANK_USER,
     password: process.env.SECRET_BANK_PASSWORD,
     define: {
-    timestamps: true,
-    underscored: true,
-  },
+      timestamps: true,
+      underscored: true,
+    }
 };
